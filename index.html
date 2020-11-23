@@ -238,8 +238,107 @@
                                 
                                 <h4> General Code Structure/Flow </h4>
                                 
-                                <p> General Code Structure/Flow </p>
+                                <p>
+								I prefer to have all code in a dedicated file just for whatever code that one file does.
+								Obviously, this won't be possible to follow 100% but if there's a situation where, for example we're adding code to deal with data compression or decompression,
+								that all goes into one .h/.cpp and we would then call the function from our core logic or interface code, etc.
+								</p>
+								<p>
+								In a similar vein of thinking, I still like the idea of having the codebase being a overall modular framework like Crowbar's original design goal - I'm not sure if this is actually practical or not though. 
+								As such, if we did go for the more modular approach, I'm definitely okay with us breaking a lot of the boilerplate/framework stuff into DLL's that we can update independently of the program.
+								There's some arguments to be made about linking statically vs dynamically, for cross platform's sake it makes sense to me to build it with dynamic linking in mind, not just because of the modular aspect,
+								but also to help with porting that code to other systems and having to create the .so for linux, etc.
+								</p>
+								
+								<p>
+								Also, as a general rule of thumb - the codebase should be the same for all supported platforms. Obviously, if we start getting into things like porting to iOS/Android, those will need to be sepearete.
+								Perhaps we can keep the theme going and have iOS/Android share a codebase - there's libraries out there that will abstract the platform stuff and let you write everything as platform agnostic and just let the framework do all the boring stuff.								
+								This would probably need to be bespoke code if we port things to game consoles as well - It'd be awesome to add support to the main codebase whenever possible but on systems like the PS3 where the way the machine works will require a completely PS3-specific approach,
+								we could probably get away with merely forking the project and keeping all the unique stuff in it's own fork.
+								To accomplish this goal of universal projects, I like to keep specific platform code under #define blocks. ie, if #define Win32 so we can take advantage of native systems to the Win32 api. This way, if we're ready to build binaries, we just change what #define tag is active, then compile and go.
+								</p>
                                 
+								<hr>
+                                
+                                <h4> Third Party libraries </h4>
+								
+								<p>
+								There's some libraries I like to use across all my projects. It makes it super easy to get new projects up off the ground. Unless otherwise noted in the project specific documentation, these libraries will be in everything I create.
+								
+								
+								
+								</p>
+								
+								<h4> BuildNumber </h4>
+								
+								<ul>
+                                <li><strong>Library name: </strong>BuildNumber</li>
+                                <li><strong>Used version: </strong> 0.8 Stable </li>
+								<li><strong>License: </strong> BSD License </li>
+                                <li><strong>Intended Use: </strong>Automatically increments build nmumber when a compile happens, even failed ones. </li>
+								<li><strong>URL: </strong> <a href="http://buildnumber.sourceforge.net/"target="_blank">BuildNumber on Sourceforge</a></li>
+								<li><strong>Documentation: </strong> <a href="http://buildnumber.sourceforge.net/README.TXT"target="_blank">ReadMe.txt for BuildNumber</a></li>
+                                </ul>
+								
+								<p>
+								
+								This one's pretty straightforward - you set up the executable in the VS project properties, buildnumber.exe fires upon compile and edits the buildnumber.h in your project, and adds one to the buildnumber in the file. A little weird to set up, the documentation wasn't that fantastic, but it's very much set-and-forget.
+								Try not to manually edit the build number - there are some times that I will go in there and edit it if there's weird edge cases like the file being locked for editing, but I want to keep it so every build incremements the build number with no exceptions.
+								
+								</p>
+								
+								<h4> SFML </h4>
+								
+								<ul>
+                                <li><strong>Library name: </strong>SFML</li>
+                                <li><strong>Used version: </strong> SFML-2.4.2 Windows 32-bit (I think?) </li>
+								<li><strong>License: </strong> zlib/png License </li>
+                                <li><strong>Intended Use: </strong>An alternative to SDL for building platform agnostic renderers, networking, audio, input, etc. </li>
+								<li><strong>URL: </strong> <a href="https://www.sfml-dev.org/"target="_blank">SFML Homepage</a></li>
+								<li><strong>Documentation: </strong> <a href="https://www.sfml-dev.org/learn.php"target="_blank">Tutorials, API documentation and FAQ.</a></li>
+                                </ul>
+								
+								<p>
+								
+								I prefer SFML to SDL for a few reasons, but most of it is because I suck and SFML is really easy to learn and use. The documentation is pretty good, and the provided examples help you learn exactly what you are doing instead of just telling you to do things.
+								
+								</p>
+								
+								<h4> SimpleIni </h4>
+								
+								<ul>
+                                <li><strong>Library name: </strong>SimpleIni</li>
+                                <li><strong>Used version: </strong> 4.17 </li>
+								<li><strong>License: </strong> MIT License </li>
+                                <li><strong>Intended Use: </strong>Easily create and parse configuration files for your program. </li>
+								<li><strong>URL: </strong> <a href="https://github.com/brofield/simpleini"target="_blank">SimpleIni on Github</a></li>
+								<li><strong>Documentation: </strong> <a href="https://github.com/brofield/simpleini/blob/master/README.md"target="_blank">ReadMe.md for SimpleIni</a></li>
+                                </ul>
+								
+								<p>
+								
+								SimpleIni is great. It's easy to manage, it lets you seperate different variables into different sections, so you can have for example all your audio settings under an [Audio] header.
+								There's also no worry about line endings or formats, it's fairly robust and cross platform.
+								
+								</p>
+								
+								<h4> spdlog </h4>
+								
+								<ul>
+                                <li><strong>Library name: </strong>spdlog</li>
+                                <li><strong>Used version: </strong> spdlog-1.4.2 </li>
+								<li><strong>License: </strong> MIT License </li>
+                                <li><strong>Intended Use: </strong>Very lightweight and very performant logging system.</li>
+								<li><strong>URL: </strong> <a href="https://github.com/gabime/spdlog"target="_blank">spdlog on Github</a></li>
+								<li><strong>Documentation: </strong> <a href="https://github.com/gabime/spdlog/wiki"target="_blank">Github Wiki for spdlog</a></li>
+                                </ul>
+								
+								<p>
+								
+								Spdlog is fantastic - header only, and is incredibly flexible so you can create your own custom logging setups, but I don't use anything other than Info, Warning and Error logging.
+								Can output to console or a file. Console will be color coded, which is nice when eyeballing for gigantic red glaring errors. Most of the logging I want to contain in a #define, so we can mark a build to enable all logs, user-useful logs, only errors, disable all logs, etc.
+								
+								</p>
                                 
                         <!-- end row -->
 
@@ -406,6 +505,8 @@
                                             <ul>
                                                 <li><strong>Project Codename: </strong>Contingency</li>
                                                 <li><strong>Current Version: </strong> Pre-Production</li>
+												<li><strong>Supported Platforms: </strong> Win32, Linux to start.</li>
+												<li><strong>Repository: </strong> <a href="https://github.com/JamesR-cB/ProjectContingency"target="_blank">Project Contingency on Github</a></li>
                                                 <li><strong>Creator: </strong> <a href="https://github.com/JamesR-cB"target="_blank">JamesR-cB</a></li>
                                                 <li><strong>Contributors: </strong> <a href="https://github.com/Sugarmanz" target="_blank">Sugarmanz</a></li>
                                             </ul>
@@ -415,13 +516,14 @@
 
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <a href="upload/thumbnail.png" data-rel="prettyPhoto"><img src="images/upload/thumbnail.png" alt="" class="img-responsive img-thumbnail"></a>
-                            </div>
 
                             <div class="col-md-8">
                                 <h4 id="line7_1">Summary </h4>
-                                <p>Lorem the It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. long established fact that a reader will English.</p>
+                                <p>
+								Project Contingency is a savegame backup/management system. It will have a database of known save locations, and will automatically back up the saves. It'll also be 100% user customizable. The general idea is for it to be a set and forget.
+								You'll do a first time setup when installing the program, then it will automatically do it's thing depending on how you set it up. 
+								
+								</p>
                             </div>
                             <!-- end col -->
                         </div>
@@ -430,13 +532,38 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <a href="upload/thumbnail.png" data-rel="prettyPhoto"><img src="images/upload/thumbnail.png" alt="" class="img-responsive img-thumbnail"></a>
-                            </div>
+
 
                             <div class="col-md-8">
                                 <h4 id="line7_2">Project Goals </h4>
-                                <p>Lorem the It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. long established fact that a reader will English.</p>
+                                <p>
+								There's a few design goals I have in mind for the project, and they are broken into two different categories, basically - "Need to have" and "Nice to have".
+								Under "Need to have", we have the following:
+								</p>
+								<h3> Lightweight </h3>
+								<p>
+								I'm really tired of moderm programs which are just webapps that ship with a Chromium distribution, they take up obscene amounts of space for what the program does, it can be very memory intensive, and burns a lot of CPU cycles for something that should be farily lightweight, and is quite frankly a waste.
+								If we build everything with native code and libraries, we can drastically reduce disk footprint and memory footprint, making it so weaker or lower end machines can still get 100% use out of the software.
+								I haven't decided on actual target numbers for memory and disk usage - that will come later on in the project once we get a rough prototype working and can gauge what the project will need.
+								</p>
+								<h3> Cross-Platform </h3>
+								<p>
+								We need to have every feature we ship with work on every platform that codebase supports. ie, our desktop codebase needs to have every single feature working exactly the same in Linux, MacOS, and Windows.
+								The code should also be fairly portable - if we do expand to other platforms, not having to start from scratch would be awesome.
+								We also need to make it so the programs are all interconnection capable, meaning that if someone hosts a backup server on their Mac, that Mac will need to deliver the file to any client that asks. Endian-ness should not come into play here,
+								as we aren't modifying the saves in any way, merely storing the date elsewhere.
+								</p>
+								<h3> Easy to use </h3>
+								<p>
+								Supporting power users is of course something we are going to allow, for people who want to roll up their sleeves and get dirty, but the UI should be simple and straightforward. The program needs to be workable by my mom with no instructions.
+								Menus themselves should be kept to a minimum. Only show menus when they are relevant to the user, ie only show the cloud backup setup if they checked cloud storage as an option.
+								Currently, my thought is I want it so in four screens or less, you will be set up and have everything how you want it. This might change as development progresses, but the goal needs to be to keep it as simple and straightforward as possible.
+								</p>
+								<p> Under "Nice to have", we have the following: </p>
+								<h3> Native libraries and UI's where possible </h3>
+								<p>
+								If we don't go with a 100% custom UI with something like QT, I'd really like the interface to use the platform's specific style and elements. ie, on a Mac, it would use the kind of MacOS program installer interface.
+								</p>
                             </div>
                             <!-- end col -->
                         </div>
@@ -445,13 +572,10 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <a href="upload/thumbnail.png" data-rel="prettyPhoto"><img src="images/upload/thumbnail.png" alt="" class="img-responsive img-thumbnail"></a>
-                            </div>
 
                             <div class="col-md-8">
                                 <h4 id="line7_3">Third-Party Libraries </h4>
-                                <p>Lorem the It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. long established fact that a reader will English.</p>
+                                <p>As of November 2020, there are no unique third party libraries in use on this project.</p>
                             </div>
                             <!-- end col -->
                         </div>
@@ -460,13 +584,13 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <a href="upload/thumbnail.png" data-rel="prettyPhoto"><img src="images/upload/thumbnail.png" alt="" class="img-responsive img-thumbnail"></a>
-                            </div>
+
 
                             <div class="col-md-8">
                                 <h4 id="line7_4">Style Guide </h4>
-                                <p>Lorem the It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. long established fact that a reader will English.</p>
+                                <p>
+								The only addition to the overall Style Guide, would be to keep the UI identical across all platforms. Every button should be the same size, shape and color and be in the same spot, and do the same things when clicked.
+								</p>
                             </div>
                             <!-- end col -->
                         </div>
@@ -475,9 +599,7 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <a href="upload/thumbnail.png" data-rel="prettyPhoto"><img src="images/upload/thumbnail.png" alt="" class="img-responsive img-thumbnail"></a>
-                            </div>
+
 
                             <div class="col-md-8">
                                 <h4 id="line7_5">Sample Code </h4>
@@ -490,13 +612,116 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <a href="upload/thumbnail.png" data-rel="prettyPhoto"><img src="images/upload/thumbnail.png" alt="" class="img-responsive img-thumbnail"></a>
-                            </div>
 
                             <div class="col-md-8">
-                                <h4 id="line7_6">Functions </h4>
-                                <p>Lorem the It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. long established fact that a reader will English.</p>
+                                <h4 id="line7_6">Functions and Variables </h4>
+                                <p>
+								
+								</p>
+								
+								<h4> Defines </h4>
+								
+								<h3> DEBUG</h3>
+								
+								<p>
+								Program is placed in a mode that should be identical to release, but with extra logging/test features enabled.
+								</p>
+								
+								<h3> TEST</h3>
+								
+								<p>
+								Program is placed in a special testing mode, where it will only fire whatever code is being worked on, for example trying to fix ini parsing so you only fire that specific aspect of the program.
+								</p>
+								
+								<h3> Platform_Win32</h3>
+								
+								<p>
+								Program is compiled with Windows specific code.
+								</p>
+								
+								<h3> Platform_Linux</h3>
+								
+								<p>
+								Program is compiled with Linux specific code.
+								</p>
+								
+								<h3> Platform_MacOS</h3>
+								
+								<p>
+								Program is compiled with MacOS specific code.
+								</p>
+								
+								<h3> Crowbar2020_Legacy</h3>
+								
+								<p>
+								Legacy engine code I want to keep for some reason.
+								</p>
+								
+								<h3> Crowbar2018_Legacy</h3>
+								
+								<p>
+								Legacy engine code I want to keep for some reason.
+								</p>
+								
+								<h3> Engine2020_Debug</h3>
+								
+								<p>
+								Used for testing new codepaths in Crowbar '20 without destroying or modifying Crowbar '18 code that we know works. This define will be deprecated and unised in Contingency.
+								</p>
+								
+								<h3> Contingency_DEMO</h3>
+								
+								<p>
+								Program is placed in a mode that should be identical to release, but with extra logging/test features enabled.
+								</p>
+								
+								<h3> Contingency_DEBUG</h3>
+								
+								<p>
+								Program is placed in a mode that should be identical to release, but with extra logging/test features enabled.
+								</p>
+								
+								<h3> Contingency_TEST</h3>
+								
+								<p>
+								Program is placed in a mode that should be identical to release, but with extra logging/test features enabled.
+								</p>
+								
+								<h3> Logs_Full</h3>
+								
+								<p>
+								Every single spdlog line is enabled.
+								</p>
+								
+								<h3> Logs_Release</h3>
+								
+								<p>
+								Disables most logging, but keeps ones useful for end users like, instead of 20 lines for different INI stuff, there's one that just says "file loaded".
+								</p>
+								
+								<hr>
+								
+								<h4> Functions </h4>
+								
+								<h3> Logging </h3>
+								
+								<h2> spdlog::info("string")
+								
+								<p>
+								Prints the contents of what's passed to it as a [INFO] block. These are just "FYI" kind of logging, useful for when you just want to confirm something is happening or not. Can accept variables as inputs.
+								</p>
+								<p> 
+								Example of a log with a hand typed message:
+								<pre class="brush: html; highlight: [2,4]"> spdlog::info("Crowbar Engine 2020 - DO NOT DISTRIBUTE"); </pre>
+								</p>
+                                
+
+								<p> 
+								Example of a log with hand typed message and variables:
+								</p>
+								<pre class="brush: html; highlight: [2,4]"> spdlog::info("Build {}, compiled {} {}. ", BUILDNUMBER, __TIME__, __DATE__ ); </pre>
+                                </div>
+								
                             </div>
                             <!-- end col -->
                         </div>
@@ -505,13 +730,10 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <a href="upload/thumbnail.png" data-rel="prettyPhoto"><img src="images/upload/thumbnail.png" alt="" class="img-responsive img-thumbnail"></a>
-                            </div>
 
                             <div class="col-md-8">
                                 <h4 id="line7_7">Changelog </h4>
-                                <p>Lorem the It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. long established fact that a reader will English.</p>
+                                <p>This field will be updated as new builds are released.</p>
                             </div>
                             <!-- end col -->
                         </div>
